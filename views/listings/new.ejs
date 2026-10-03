@@ -1,0 +1,394 @@
+<% layout("/layouts/boilerplate") %> 
+
+<style>
+/* ------------------- Main Container ------------------- */
+.form-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  background: #f4f6fa; 
+  padding: 40px;
+  border-radius: 20px;
+  flex-direction: row; /* side by side */
+}
+
+/* ------------------- Inner Boxes ------------------- */
+.form-box {
+  flex: 1;
+  background: #001233; /* dark navy blue */
+  color: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-box h2 {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #00b4d8; /* highlight blue heading */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+}
+
+/* ---------- Form Controls ---------- */
+.form-group label {
+  color: #e0eaff; /* soft light blue for readability on dark box */
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background-color: #ffffff; /* solid white inputs for contrast */
+  color: #001233; /* dark text inside input */
+  box-shadow: 0 3px 8px rgba(0, 37, 88, 0.15);
+ 
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #646c7e; /* subtle gray placeholders */
+  font-weight: 500;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border: 2px solid #00b4d8; /* bright cyan border on focus */
+  box-shadow: 0 0 8px 2px rgba(126, 200, 255, 0.3); /* light blue glow */
+  
+}
+
+.form-group input:hover, textarea:hover{
+    box-shadow: 0px 0px 5px 5px rgb(64, 214, 255);
+}
+
+/* ---------Select Option ---------*/
+
+
+
+.form-group select option {
+  background-color: #001233; /* dark blue background for options */
+  color: #ffffff; /* white text */
+}
+
+.form-group select:focus {
+  border-color: #00b4d8; /* light blue glow */
+  box-shadow: 0 0 5px rgba(0, 180, 216, 0.4);
+}
+
+
+
+
+
+
+/* ---------- Dropdown ---------- */
+.dropdown-toggle {
+  width: 100%; 
+  text-align: start !important;
+  background: #ffffff;
+  border: none;
+  color: #001233 !important;
+  padding: 12px 14px !important;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dropdown-toggle:focus{
+    border: 2px solid #00b4d8;
+    box-shadow: 0 0 8px 2px rgba(126, 200, 255, 0.3);
+    outline: none;
+}
+
+.dropdown-toggle:hover {
+  background: #e0eaff;
+  box-shadow: 0 0 8px 2px rgba(126, 200, 255, 0.3);
+}
+
+.dropdown-menu {
+  display: none; /* hidden by default */
+  width: 60%;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-menu label {
+  display: flex;
+  align-items: center;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #023E7D;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  margin-bottom: 0;
+}
+
+.dropdown-menu label:hover {
+  background-color: #e2e7f1;
+}
+
+
+.dropdown-menu input[type="checkbox"] {
+  width: auto;          /* keep default checkbox width */
+  height: auto;         /* keep default checkbox height */
+  margin-right: 8px;    /* spacing between checkbox and label */
+  transform: scale(1.2); /* slightly larger but not huge */
+  vertical-align: middle;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+
+.dropdown.open .dropdown-menu {
+  display: block; /* show when open */
+}
+
+
+/* ---------- Medium Screens (tablets) ---------- */
+@media (max-width: 1199px){
+  .form-container {
+    flex-direction: row; /* still side by side */
+    padding: 30px;
+    gap: 15px;
+  }
+  .form-box {
+    flex: 1 1 50%; /* each takes ~half */
+  }
+}
+
+
+
+/* ---------- Small Screens (mobiles) ---------- */
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column; /* stack vertically */
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+  .form-box {
+    flex: 1 1 100%;
+  }
+}
+
+
+</style>
+
+
+
+  <form method="POST" action="/listings" class="needs-validation" novalidate enctype="multipart/form-data">
+
+    <div class="form-container">
+
+      <!-- LEFT SIDE : LISTING INFO -->
+      <div class="form-box">
+
+        <h2>Create New Listing</h2>
+
+        <div class="form-group">
+            <label for="title" class="form-label">Title: </label>
+            <input type="text" name="Listing[title]" placeholder="enter title" class="form-control" required>
+            <div class="valid-feedback">Title looks good!</div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <label for="description" class="form-label">Description: </label>
+            <textarea name="Listing[description]" placeholder="enter description" class="form-control" required></textarea>
+            <div class="invalid-feedback">Please enter a short description</div>
+        </div>
+
+        <br>
+        <!-- Category Dropdown -->
+        <div class="form-group category-dropdown">
+        <label for="categoryDropdown" class="form-label">Category:</label>
+        
+        <div class="dropdown">
+            <button type="button" class="dropdown-toggle" id="categoryDropdown">
+            Select Categories
+            </button>
+            <div class="dropdown-menu">
+            <label><input type="checkbox" name="Listing[category][]" value="Iconic Cities"> Iconic Cities</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Mountains"> Mountains</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Castles"> Castles</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Swimming Pool"> Swimming Pool</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Camping"> Camping</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Farms"> Farms</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Arctic"> Arctic</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Domes"> Domes</label>
+            <label><input type="checkbox" name="Listing[category][]" value="Boats"> Boats</label>
+            </div>
+        </div>
+        </div>
+
+        
+        <br>
+
+        <div class="form-group"> 
+            <label for="image" class="form-label">Upload Image: </label>
+            <input type="file" name="images" class="form-control" multiple required>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <label for="price" class="form-label">Price: </label>
+            <input type="number" name="Listing[price]" placeholder="enter price" class="form-control" required>
+            <div class="invalid-feedback">Price should be valid.</div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <label for="location" class="form-label">Location: </label>
+            <input type="text" name="Listing[location]" placeholder="enter location" class="form-control" required>
+            <div class="invalid-feedback">Location should be valid.</div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <label for="country" class="form-label">Country: </label>
+            <input type="text" name="Listing[country]" placeholder="enter country" class="form-control" required>
+            <div class="invalid-feedback">Country name should be valid.</div>
+        </div>
+
+        </div>
+
+        <br>
+
+        <hr>
+        
+      <!-- RIGHT SIDE : CONTACT INFO -->
+      <div class="form-box">
+        <h2>Contact Information</h2>
+        <div class="form-group">
+          <label>Phone:</label>
+          <input type="text" name="Listing[contact][phone]" class="form-control">
+        </div>
+        <br>
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" name="Listing[contact][email]" class="form-control">
+        </div>
+        <br>
+
+  <!-- Property Facilities -->
+  <div class="form-group">
+    <label class="form-label">Property Facilities:</label>
+    <div class="dropdown">
+      <button type="button" class="dropdown-toggle">Select Facilities</button>
+      <div class="dropdown-menu">
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Parking"> Parking</label>
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Swimming Pool"> Swimming Pool</label>
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Gym"> Gym</label>
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Restaurant"> Restaurant</label>
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Spa"> Spa</label>
+        <label><input type="checkbox" name="Listing[propertyFacilities][]" value="Garden"> Garden</label>
+      </div>
+    </div>
+  </div>
+  <br>
+
+  <!-- Booking Type -->
+  <div class="form-group">
+    <label>Booking Type:</label>
+    <select name="Listing[bookingType]" class="form-control">
+      <option value="Per Room">Per Room</option>
+      <option value="Entire Property">Entire Property</option>
+    </select>
+  </div>
+  <br>
+
+  <!-- Check-in / Check-out -->
+  <div class="form-group">
+    <label>Check-in Time:</label>
+    <input type="text" id="checkin" name="Listing[checkin]" class="form-control">
+  </div> 
+  <br>
+  <div class="form-group">
+    <label>Check-out Time:</label>
+    <input type="text" id="checkout" name="Listing[checkout]" class="form-control">
+  </div>
+  <br><br>
+
+  </div>
+  </div>
+
+
+
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Only show "Enter Room Details" button if listing has been created -->
+    <% if (typeof listing !== "undefined") { %>
+      <a href="/listings/<%= listing._id %>/rooms" class="btn btn-primary" style="margin-top:20px;">
+        Enter Room Details
+      </a>
+    <% } %>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdowns = document.querySelectorAll(".dropdown");
+  dropdowns.forEach(dropdown => {
+    const toggleBtn = dropdown.querySelector(".dropdown-toggle");
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("open");
+    });
+
+      const checkboxes = dropdown.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        const selected = Array.from(checkboxes)
+          .filter(c => c.checked)
+          .map(c => c.value);
+        toggleBtn.textContent = selected.length ? selected.join(", ") : "Select Options";
+      });
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    dropdowns.forEach(dropdown => dropdown.classList.remove("open"));
+  });
+  
+  
+
+  // Flatpickr initialization
+  flatpickr("#checkin", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "h:i K",
+    time_24hr: false
+  });
+
+  flatpickr("#checkout", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "h:i K",
+    time_24hr: false
+  });
+});
+</script>  

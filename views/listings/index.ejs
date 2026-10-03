@@ -1,0 +1,146 @@
+<% layout("/layouts/boilerplate") %>
+
+
+    <div id="filters" class="filter-panel">
+
+        <div class="filters-left">
+
+            <div class="filter" data-category="Trending">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </div>
+
+            <div class="filter" data-category="Iconic Cities">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>Iconic Cities</p>
+            </div>
+
+            <div class="filter" data-category="Mountains">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountains</p>
+            </div>
+
+            <div class="filter" data-category="Castles">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castles</p>
+            </div>
+
+            <div class="filter" data-category="Swimming Pool">
+                <div><i class="fa-solid fa-person-swimming"></i></div>
+                <p>Swimming Pool</p>
+            </div>
+
+            <div class="filter" data-category="Camping">
+                <div><i class="fa-solid fa-campground"></i></div>
+                <p>Camping</p>
+            </div>
+
+            <div class="filter" data-category="Farms">
+                <div><i class="fa-solid fa-cow"></i></div>
+                <p>Farms</p>
+            </div>
+
+            <div class="filter" data-category="Arctic">
+                <div><i class="fa-solid fa-snowflake"></i></div>
+                <p>Arctic</p>
+            </div>
+
+            <div class="filter" data-category="Domes">
+                <div><i class="fa-solid fa-igloo"></i></div>
+                <p>Domes</p>
+            </div>
+            
+            <div class="filter" data-category="Boats">
+                <div><i class="fa-solid fa-ship"></i></div>
+                <p>Boats</p>
+            </div>
+
+        </div>
+
+        <div class="tax-toggle">
+            <div class="form-check form-switch form-check-reverse">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                <label class="form-check-label" for="switchCheckDefault">Display views and total price after taxes</label>
+            </div>
+        </div>
+
+    </div>
+
+
+ 
+
+    <!-- <h2>All Listings</h2> -->
+    <!-- <form method="GET" action="/listings/new">
+        <button type="submit">Create New Listing</button>
+    </form> -->
+
+    <% if(q && allListings.length !== 0) { %>
+            <p class="search-message">Showing result for <b><%= q %></b> </p>
+    <% } %>
+
+    <% if(allListings.length === 0) { %>
+            <p class="search-message">No listings found for <b><%= q %></b> </p>
+    <% } %>
+
+    <br>
+
+    <div class="listings-conatiner">
+
+        <% for(let listing of allListings){ %>
+
+            <a href="/listings/<%= listing._id %>">
+
+                <div class="listing-card">
+                    <div class="listing-img">
+                        <img src="<%= listing.images[0].url %>" alt="listing-img">
+                    </div>
+                    <div class="listing-info">
+                        <p>
+                            <b><%= listing.title %></b> <br>
+                            &#8377;<%= listing.price.toLocaleString("en-IN") %> / night <i class="tax-info"> &nbsp; +18% GST</i><br>
+                        </p>
+                        <p class="views-info"><i class="fa-solid fa-eye"></i> <%= listing.views %> views</p>
+                        
+
+                    </div>
+                </div>
+
+            </a>
+
+        <% } %> 
+
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const filtersPanel = document.getElementById('filters');
+    const filterBtn = document.querySelector('.filter-toggle');
+
+    // Mobile toggle
+    filterBtn.addEventListener('click', () => {
+        filtersPanel.classList.toggle('show');
+    });
+
+    // Category click closes mobile sidebar
+    const filters = document.querySelectorAll(".filter");
+    filters.forEach((filter) => {
+        filter.addEventListener("click", () => {
+            const category = filter.dataset.category;
+            if (category) {
+                filtersPanel.classList.remove("show");
+                window.location.href = `/listings?q=${encodeURIComponent(category)}`;
+            }
+        });
+    });
+
+    // Toggle GST & Views
+    const textSwitch = document.getElementById("switchCheckDefault");
+    const taxInfo = document.getElementsByClassName("tax-info");
+    const viewsInfo = document.getElementsByClassName("views-info");
+
+    textSwitch.addEventListener("change", () => {
+        for (let info of taxInfo) info.style.display = textSwitch.checked ? "inline" : "none";
+        for (let view of viewsInfo) view.style.display = textSwitch.checked ? "block" : "none";
+    });
+});
+</script>

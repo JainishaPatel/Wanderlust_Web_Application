@@ -1,0 +1,313 @@
+<% layout("/layouts/boilerplate") %>
+
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ------------------- Edit Room Form Styling ------------------- */
+#editRoomSection {
+  background: #001845;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #33415C;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  width: 40vw;
+  margin: 30px auto;
+}
+
+#editRoomSection h2 {
+  margin-bottom: 25px;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #40d6ff;
+  text-align: center;
+}
+
+#editRoomSection label {
+  font-weight: 600;
+  margin-top: 20px;
+  display: block;
+  color: #e0e7ff;
+}
+
+#editRoomSection input,
+#editRoomSection select,
+#editRoomSection textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #5C677D;
+  margin-top: 6px;
+  background: #fff;
+  color: #001233;
+  font-size: 0.95rem;
+}
+
+#editRoomSection input[type="checkbox"]{
+  width: auto;
+  transform: scale(1.1);
+  margin-right: 6px;
+}
+
+#editRoomSection .form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+#editRoomSection button,
+#editRoomSection a.cancel-btn {
+  background: #0466C8;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+#editRoomSection button:hover,
+#editRoomSection a.cancel-btn:hover {
+  background: #0353A4;
+}
+
+#editRoomSection .carousel-inner img {
+  border-radius: 10px;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* ------------------- Delete Checkbox + Trash Icon ------------------- */
+.delete-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 4px 6px;
+  border-radius: 6px;
+  z-index: 20;
+}
+
+.delete-wrapper .delete-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.delete-wrapper .delete-icon {
+  cursor: pointer;
+  color: #001845;
+  font-size: 16px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.delete-wrapper .delete-icon:hover {
+  transform: scale(1.2);
+  color: red;
+}
+
+/* Carousel Arrows Circle */
+#roomCarousel .carousel-control-prev,
+#roomCarousel .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.5);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Remove Bootstrap default icon */
+#roomCarousel .carousel-control-prev-icon,
+#roomCarousel .carousel-control-next-icon {
+  background-image: none;
+}
+
+/* Use FontAwesome arrows instead */
+#roomCarousel .carousel-control-prev::after,
+#roomCarousel .carousel-control-next::after {
+  font-family: "Font Awesome 6 Free"; /* Make sure FA is loaded */
+  font-weight: 900;
+  font-size: 18px;
+  color: white;
+}
+
+#roomCarousel .carousel-control-prev::after {
+  content: "\f104"; /* fa-chevron-left */
+}
+
+#roomCarousel .carousel-control-next::after {
+  content: "\f105"; /* fa-chevron-right */
+}
+
+#roomCarousel .carousel-control-prev {
+  left: 10px;
+}
+
+#roomCarousel .carousel-control-next {
+  right: 10px;
+}
+
+
+
+
+/* ------------------- Responsive Adjustments ------------------- */
+@media (max-width: 992px) {
+  #editRoomSection { width: 60vw; padding: 20px; }
+  #editRoomSection .carousel-inner img { height: 220px; }
+  #roomCarousel .carousel-control-prev, #roomCarousel .carousel-control-next { width: 35px; height: 35px; }
+  #roomCarousel .carousel-control-prev::before, #roomCarousel .carousel-control-next::before { width: 10px; height: 10px; border-width: 0 2px 2px 0; }
+  .delete-wrapper .delete-checkbox { width: 16px; height: 16px; }
+  .delete-wrapper .delete-icon { font-size: 14px; }
+}
+
+@media (max-width: 768px) {
+  #editRoomSection { width: 70vw; padding: 15px; }
+  #editRoomSection .carousel-inner img { height: 200px; }
+  #roomCarousel .carousel-control-prev, #roomCarousel .carousel-control-next { width: 30px; height: 30px; }
+  #roomCarousel .carousel-control-prev::before, #roomCarousel .carousel-control-next::before { width: 8px; height: 8px; border-width: 0 2px 2px 0; }
+  .delete-wrapper { top: 5px; right: 5px; gap: 4px; padding: 2px 4px; }
+  .delete-wrapper .delete-checkbox { width: 14px; height: 14px; }
+  .delete-wrapper .delete-icon { font-size: 12px; }
+}
+</style>
+
+
+<div id="editRoomSection">
+  <h2>Edit Room for <%= listing.title %></h2>
+
+  <form method="POST" action="/listings/<%= listing._id %>/rooms/<%= room._id %>?_method=PUT" enctype="multipart/form-data">
+
+    <!-- Room Number -->
+    <div class="form-group">
+      <label>Room Number:</label>
+      <input type="number" name="room[roomNumber]" value="<%= room.roomNumber %>" required>
+    </div>
+
+    <!-- Number of Beds -->
+    <div class="form-group">
+      <label>Number of Beds:</label>
+      <input type="number" name="room[roomBeds]" value="<%= room.roomBeds %>" required>
+    </div>
+
+    <!-- Bed Types -->
+    <div class="form-group">
+      <label>Bed Types:</label>
+      <% ['King','Queen','Double','Single'].forEach(type => { %>
+        <label class="checkbox">
+          <input type="checkbox" name="room[bedTypes][]" value="<%= type %>"
+            <%= room.bedTypes && room.bedTypes.includes(type) ? 'checked' : '' %> >
+          <%= type %>
+        </label>
+      <% }) %>
+    </div>
+
+    <!-- Guests Allowed -->
+    <div class="form-group">
+      <label>Guests Allowed:</label>
+      <input type="number" name="room[occupancy]" value="<%= room.occupancy %>" required>
+    </div>
+
+    <!-- Existing Images -->
+    <% if (room.images && room.images.length > 0) { %>
+      <div class="form-group mt-3">
+        <label>Existing Images (Check to Delete):</label>
+        <div class="carousel slide" id="roomCarousel" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <% room.images.forEach((img, idx) => { %>
+             <div class="carousel-item <%= idx === 0 ? 'active' : '' %> position-relative">
+              <img src="<%= img.url %>" class="d-block w-100">
+
+              <!-- Checkbox + Icon container -->
+              <div class="delete-wrapper">
+                <input type="checkbox" class="delete-checkbox" name="room[deleteImages][]" value="<%= img.filename %>">
+                <i class="fa-solid fa-trash delete-icon"></i>
+              </div>
+            </div>
+
+            <% }) %>
+          </div>
+
+          <!-- Carousel Controls -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Add New Images -->
+    <div class="form-group mt-3">
+      <label>Upload New Images:</label>
+      <input type="file" name="room[images]" multiple>
+    </div>
+
+    <!-- Check-in / Check-out -->
+    <div class="form-group">
+      <label>Check-in:</label>
+      <input type="text" name="room[checkin]" value="<%= room.checkin %>">
+    </div>
+
+    <div class="form-group">
+      <label>Check-out:</label>
+      <input type="text" name="room[checkout]" value="<%= room.checkout %>">
+    </div>
+
+    <!-- Amenities -->
+    <div class="form-group">
+      <label>Amenities:</label>
+      <% ['Wi-Fi','TV','Air Conditioning'].forEach(amenity => { %>
+        <label>
+          <input type="checkbox" name="room[amenities][]" value="<%= amenity %>"
+            <%= room.amenities && room.amenities.includes(amenity) ? 'checked' : '' %>>
+          <%= amenity %>
+        </label>
+      <% }) %>
+    </div>
+
+    <!-- Bathroom & Toilet -->
+    <div class="form-group">
+      <label>Bathroom:</label>
+      <select name="room[bathroom]">
+        <option value="Attached Bathroom" <%= room.bathroom === "Attached Bathroom" ? "selected" : "" %>>Attached Bathroom</option>
+        <option value="Shared Bathroom" <%= room.bathroom === "Shared Bathroom" ? "selected" : "" %>>Shared Bathroom</option>
+        <option value="Private (Outside)" <%= room.bathroom === "Private (Outside)" ? "selected" : "" %>>Private (Outside)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Toilet Type:</label>
+      <select name="room[toiletType]">
+        <option value="Western Toilet" <%= room.toiletType === "Western Toilet" ? "selected" : "" %>>Western Toilet</option>
+        <option value="Indian Toilet" <%= room.toiletType === "Indian Toilet" ? "selected" : "" %>>Indian Toilet</option>
+        <option value="Both Available" <%= room.toiletType === "Both Available" ? "selected" : "" %>>Both Available</option>
+      </select>
+    </div>
+
+    <!-- Rules -->
+    <div class="form-group">
+      <label>Rules / Notes:</label>
+      <textarea name="room[rules]"><%= room.rules %></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-actions">
+      <button type="submit">Update Room</button>
+      <a href="/listings/<%= listing._id %>/rooms" class="cancel-btn">Cancel</a>
+    </div>
+
+  </form>
+</div>

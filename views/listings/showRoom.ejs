@@ -1,0 +1,261 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  /* ---------- Rooms Page Container ---------- */
+  .rooms-page {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .rooms-page h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 35px;
+    color: #023E7D;
+  }
+
+  /* ---------- Room Card ---------- */
+  .room-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+  }
+
+  /* ---------- Carousel ---------- */
+  .room-card .room-carousel .carousel-inner {
+    width: 100%;
+    aspect-ratio: auto;
+    overflow: hidden;
+  }
+
+  .room-card img.room-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+    transition: transform 0.4s ease;
+  }
+
+  .room-carousel .carousel-control-prev,
+  .room-carousel .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, transform 0.2s ease;
+    opacity: 1 !important;
+    z-index: 11;
+  }
+
+  .room-carousel .carousel-control-prev-icon,
+  .room-carousel .carousel-control-next-icon {
+    background: none !important;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .room-carousel .carousel-control-prev-icon::before,
+  .room-carousel .carousel-control-next-icon::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(135deg);
+  }
+
+  .room-carousel .carousel-control-next-icon::before {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  .room-carousel .carousel-control-prev:hover,
+  .room-carousel .carousel-control-next:hover {
+    background: rgba(4, 102, 200, 0.8);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .room-carousel .carousel-indicators {
+    bottom: 10px;
+  }
+
+  .room-carousel .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: background 0.3s ease;
+  }
+
+  .room-carousel .carousel-indicators .active {
+    background-color: #0466C8;
+  }
+
+  /* ---------- Card Body ---------- */
+  .card-body {
+    padding: 18px;
+    background: #f9f9f9;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0466C8;
+    margin-bottom: 10px;
+  }
+
+  .card-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #33415C;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-sm {
+    border-radius: 8px;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-primary {
+    border-radius: 8px;
+    font-weight: 500;
+    color: #0466C8;
+    border: 1px solid #0466C8;
+  }
+
+  .btn-outline-primary:hover {
+    background: #0466C8;
+    color: #fff;
+  }
+
+  .btn-primary { background: #0353A4; border: none; }
+  .btn-primary:hover { background: #023E7D; }
+
+  .btn-danger { background: #d9534f; border: none; }
+  .btn-danger:hover { background: #c9302c; }
+
+  .btn-success { background: #198754; border: none; }
+  .btn-success:hover { background: #146c43; }
+
+  .btn-secondary { background: #6c757d; border: none; }
+  .btn-secondary:hover { background: #5a6268; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1199px) and (min-width: 768px) {
+    .room-card img.room-img { height: 220px; }
+  }
+
+  @media (max-width: 767px) {
+    .room-card img.room-img { height: 180px; }
+  }
+
+  @media (max-width: 480px) {
+    .rooms-page h2 { font-size: 1.8rem; }
+    .card-title { font-size: 1.1rem; }
+    .card-text { font-size: 0.9rem; }
+    .carousel-indicators button { width: 8px; height: 8px; }
+  }
+</style>
+
+<div class="container mt-4 rooms-page">
+  <h2>Rooms for <%= listing.title %></h2>
+
+  <div class="row">
+    <% if (listing.rooms && listing.rooms.length > 0) { %>
+      <% listing.rooms.forEach((room, index) => { %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card room-card">
+
+            <!-- Carousel -->
+            <% if (room.images && room.images.length > 0) { %>
+              <div id="roomCarousel<%= index %>" class="room-carousel carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <% room.images.forEach((img, i) => { %>
+                    <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                      <img src="<%= img.url %>" class="d-block w-100 room-img" alt="Room Image">
+                    </div>
+                  <% }) %>
+                </div>
+
+                <% if(room.images.length > 1) { %>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel<%= index %>" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel<%= index %>" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                  </button>
+                  <div class="carousel-indicators">
+                    <% room.images.forEach((img, i) => { %>
+                      <button type="button" data-bs-target="#roomCarousel<%= index %>" data-bs-slide-to="<%= i %>" class="<%= i === 0 ? 'active' : '' %>"></button>
+                    <% }) %>
+                  </div>
+                <% } %>
+              </div>
+            <% } else { %>
+              <div class="p-3 text-center text-muted">No images uploaded</div>
+            <% } %>
+
+            <!-- Card Body -->
+            <div class="card-body">
+              <h5 class="card-title">Room <%= room.roomNumber %></h5>
+              <p class="card-text">
+                <b>₹<%= room.price ? room.price.toLocaleString("en-IN") : "N/A" %></b> / night <br>
+                <b>Beds:</b> <%= room.roomBeds %> |
+                <b>Guests:</b> <%= room.occupancy %> <br>
+                <b>Available:</b> <%= room.isAvailable ? "Yes" : "No" %>
+              </p>
+
+              <!-- More Info -->
+              <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#moreInfo<%= index %>">
+                + More Info
+              </button>
+              <div class="collapse mt-2" id="moreInfo<%= index %>">
+                <p><b>Floor:</b> <%= room.floor || "Not specified" %></p>
+                <p><b>Bed Types:</b> <%= room.bedTypes && room.bedTypes.length ? room.bedTypes.join(", ") : "Not specified" %></p>
+                <p><b>Check-in:</b> <%= room.checkin %></p>
+                <p><b>Check-out:</b> <%= room.checkout %></p>
+                <p><b>Amenities:</b> <%= room.amenities && room.amenities.length ? room.amenities.join(", ") : "Not specified" %></p>
+                <p><b>Bathroom:</b> <%= room.bathroom %></p>
+                <p><b>Toilet Type:</b> <%= room.toiletType %></p>
+                <p><b>Rules:</b> <%= room.rules || "No rules specified" %></p>
+              </div>
+
+              <% if(currentUser && listing.owner && listing.owner._id.equals(currentUser._id)) { %>
+                <div class="mt-2">
+                  <a href="/listings/<%= listing._id %>/rooms/<%= room._id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+                  <form method="POST" action="/listings/<%= listing._id %>/rooms/<%= room._id %>?_method=DELETE" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                  </form>
+                  <a href="/listings/<%= listing._id %>/rooms/<%= room._id %>/images" class="btn btn-sm btn-outline-primary">Manage Images</a>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-center">No rooms added yet.</p>
+    <% } %>
+  </div>
+
+  <% if(currentUser && listing.owner && listing.owner._id.equals(currentUser._id)) { %>
+    <a href="/listings/<%= listing._id %>/rooms/new" class="btn btn-success mt-3">Add New Room</a>
+  <% } %>
+  <a href="/listings/<%= listing._id %>" class="btn btn-secondary mt-3">Back</a>
+</div>

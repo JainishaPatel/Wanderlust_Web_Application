@@ -1,0 +1,63 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div>
+        <form method="POST" action="/signup" class="needs-validation listing-form" novalidate>
+
+            <h2>SignUp on Wanderlust</h2>
+
+            <br>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" id="username" placeholder="Create a unique username" required>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="email"  placeholder="you@example.com" required>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="password" placeholder="Create a strong password" required>
+                <!-- Eye icon for toggle -->
+                <i id="togglePassword" class="fa fa-eye"></i>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+
+            <br>
+
+            <!-- Role (user/host/admin) -->
+            <div class="form-group">
+                <label for="role" class="form-label">Role</label>
+                <select name="role" id="role" class="form-control">
+                    <option value="user" selected>User</option>
+                    <option value="host">Host</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <br><br>
+
+            <button type="submit">SignUp</button>
+
+        </form>
+    </div>
+
+<script>
+    const togglePassword = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+
+    togglePassword.addEventListener("click", function() {
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>

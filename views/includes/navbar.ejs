@@ -1,0 +1,75 @@
+
+
+
+<div class="nav-bar">
+
+  <div class="box-1">
+
+    <div class="nav-bar-logo">
+      <a href="/listings"><i class="fa-regular fa-compass"></i></a>
+    </div>
+
+    <!-- All links together -->
+    <div class="all-links">
+
+      <div class="nav-bar-links left-links">
+        <a href="/listings">Explore</a>
+      </div>
+
+      <div class="nav-bar-links left-links ms-auto">
+        <form class="d-flex" role="search" action="/listings" method="GET">
+          <input class="form-control me-2" id="search-input" type="search" name="q" placeholder="Search Destination" aria-label="Search"/>
+          <button class="btn" id="search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>&nbsp; Search</button>
+        </form>
+      </div>
+
+      <div class="nav-bar-links right-links">
+        <a href="/listings/new">Wanderlust your home</a>
+        <% if(!currentUser){ %>
+          <a href="/signup"><b>Signup</b></a>
+          <a href="/login"><b>Login</b></a>
+        <% } %>
+        <% if(currentUser){ %>
+          <a href="/logout"><b>Logout</b></a>
+        <% } %>
+      </div>
+
+    </div>
+
+  </div>
+
+ <div class="box-2">
+    <div class="menu-btn">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+    <button class="filter-toggle">
+        <i class="fa-solid fa-filter"></i> Filters
+    </button>
+</div>
+
+  
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+   // Menu toggle
+  const menuBtn = document.querySelector(".menu-btn");
+  const allLinks = document.querySelector(".all-links");
+
+  if (menuBtn && allLinks) {
+    menuBtn.addEventListener("click", () => {
+      allLinks.classList.toggle("show");
+    });
+  }
+  
+  const filterToggleBtn = document.getElementById("filter-toggle");
+  const filtersContainer = document.getElementById("filters");
+
+  if (filterToggleBtn && filtersContainer) {
+    filterToggleBtn.addEventListener("click", () => {
+      filtersContainer.classList.toggle("show");
+    });
+  }
+});
+</script>

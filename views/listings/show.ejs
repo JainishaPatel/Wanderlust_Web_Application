@@ -1,0 +1,551 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    /* Contact Popup Container */
+.contact-popup {
+    position: fixed;
+    top: -100%; /* start hidden above viewport */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background-color: #001233; /* dark blue */
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    z-index: 9999;
+    transition: top 0.5s ease;
+    padding: 20px;
+}
+
+/* Show popup */
+.contact-popup.show {
+    top: 20px; /* slide down */
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #00b4d8; /* light blue */
+}
+
+/* Contact content text */
+.contact-popup p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+}
+
+.contact-popup h4 {
+    margin-bottom: 10px;
+    color: #00b4d8;
+}
+
+.booking-info {
+    background-color: #f8f9fa;  /* soft light gray */
+    border: 1px solid #ddd;     /* simple thin border */
+    border-radius: 8px;         /* smooth corners */
+    padding: 15px 20px;
+    margin: 15px 0;
+}
+
+.booking-info h5 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #023E7D;  /* simple dark blue for heading */
+    font-weight: 600;
+}
+
+.booking-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.booking-info li {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.booking-info b {
+    color: #333; /* simple dark text */
+}
+
+.listing-details {
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+.details-section, .booking-info {
+    background: #f8f9fa;       /* light gray background */
+    border: 1px solid #ddd;    /* simple border */
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+}
+
+.details-section h5,
+.booking-info h5 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #023E7D;            /* consistent blue heading */
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.details-section p,
+.booking-info li {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.booking-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ---------- Carousel Container ---------- */
+#listingCarousel {
+  position: relative;
+  max-width: 700px;
+  margin: 20px auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  background: #f9f9f9;
+}
+
+
+/* ---------- Carousel Images ---------- */
+#listingCarousel .preview-img {
+  height: 300px;       /* default height */
+  object-fit: fill;   /* maintain aspect ratio */
+  border-radius: 10px;
+}
+
+
+/* ---------- Carousel Controls ---------- */
+#listingCarousel .carousel-control-prev,
+#listingCarousel .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Remove default Bootstrap arrows (double circles) */
+#listingCarousel .carousel-control-prev-icon,
+#listingCarousel .carousel-control-next-icon {
+  background-image: none;  /* removes double circle */
+  width: 16px;
+  height: 16px;
+  border: solid #fff;      /* white arrow */
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+/* Rotate arrows */
+#listingCarousel .carousel-control-prev-icon {
+  transform: rotate(135deg); /* left arrow */
+}
+
+#listingCarousel .carousel-control-next-icon {
+  transform: rotate(-45deg); /* right arrow */
+}
+
+/* Hover effect for arrows */
+#listingCarousel .carousel-control-prev:hover,
+#listingCarousel .carousel-control-next:hover {
+  background: rgba(0, 180, 216, 0.8); /* highlight on hover */
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ---------- Carousel Indicators ---------- */
+#listingCarousel .carousel-indicators {
+  bottom: 10px;
+}
+
+#listingCarousel .carousel-indicators button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ddd;
+}
+
+#listingCarousel .carousel-indicators .active {
+  background-color: #00b4d8; /* match your theme */
+}
+
+/* ---------- Responsive Images ---------- */
+@media (max-width: 992px) {
+  #listingCarousel .preview-img { height: 250px; }
+}
+
+@media (max-width: 768px) {
+  #listingCarousel .preview-img { height: 200px; }
+  #listingCarousel .carousel-control-prev,
+  #listingCarousel .carousel-control-next { width: 30px; height: 30px; }
+}
+
+@media (max-width: 480px) {
+  #listingCarousel .preview-img { height: 120px; }
+  #listingCarousel .carousel-control-prev,
+  #listingCarousel .carousel-control-next {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+
+
+
+
+
+</style>
+
+
+<script>
+    const mapToken = "<%= process.env.MAP_TOKEN %>";
+    const coordinates = <%- JSON.stringify(listing.geometry.coordinates) %>;
+    const locationOfCity = <%- JSON.stringify(listing.location) %>;
+    const listingData = <%- JSON.stringify(listing) %>;
+    // console.log(coordinates);
+</script>
+
+<div class="details-container">
+
+    <h2><%= listing.title %></h2>
+
+    <div class="listing-details">
+
+        <!-- Owner & Description -->
+        <div class="details-section">
+            <h5>About this Property</h5>
+            <p><b>Owned by:</b> <i><%= listing.owner ? listing.owner.username : "Unknown" %></i></p>
+            <p><%= listing.description %></p>
+        </div>
+
+        <!-- Categories & Image -->
+        <% if (listing.category && listing.category.length > 0) { %>
+            <div class="details-section">
+                <h5>Categories</h5>
+                <p><%= listing.category.join(", ") %></p>
+            </div>
+        <% } %>
+
+<% if (listing.images && listing.images.length > 0) { %>
+  <div class="details-section mt-3">
+    <h5>Preview</h5>
+
+    <div id="listingCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <div class="carousel-inner">
+        <% listing.images.forEach((img, idx) => { %>
+          <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+            <img src="<%= img.url %>" 
+                 class="d-block w-100 preview-img" 
+                 alt="Listing Image <%= idx+1 %>">
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#listingCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#listingCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+
+       
+
+    </div>
+  </div>
+<% } %>
+
+        <!-- Booking Information -->
+        <div class="booking-info">
+            <h5>Booking Information</h5>
+            <ul>
+                <li><b>Booking Type:</b> &nbsp; <%= listing.bookingType %></li>
+                <% if (listing.bookingType === "Entire Property") { %>
+                    <li><b>Price:</b> ₹<%= listing.price.toLocaleString("en-IN") %> (entire property per night)</li>
+                <% } %>
+
+                <% if (listing.bookingType === "Entire Property") { %>
+                    (per night for entire property)
+                <% } %>
+               
+                <li><b>Check-in:</b> &nbsp; <%= listing.checkin %> &nbsp; | &nbsp; <b>Check-out:</b> &nbsp; <%= listing.checkout %></li>
+            </ul>
+        </div>
+
+        <!-- Address -->
+        <% if(listing.address && listing.address.length > 0) { %>
+            <div class="details-section">
+                <h5>Address</h5>
+                <p>
+                    <%= listing.address.street %>, 
+                    <%= listing.address.city %>, 
+                    <%= listing.address.state %> - <%= listing.address.postalCode %>
+                </p>
+            </div>
+        <% } %>
+
+        <!-- Facilities -->
+        <% if (listing.propertyFacilities && listing.propertyFacilities.length > 0) { %>
+            <div class="details-section">
+                <h5>Facilities</h5>
+                <p><%= listing.propertyFacilities.join(", ") %></p>
+            </div>
+        <% } %>
+
+        <!-- Location -->
+        <div class="details-section">
+            <h5>Location</h5>
+            <p><%= listing.location %>, <%= listing.country %></p>
+        </div>
+    </div>
+        
+    <br><hr>
+        
+    <div class="custom-btn">
+        <% if (listing.rooms && listing.rooms.length > 0) { %> 
+            <!-- See Room Details -->
+             <form method="GET" action="/listings/<%= listing._id %>/rooms">
+                <button type="submit" class="action-btn"><i class="bi bi-door-open"></i>Room Details</button>
+            </form>
+     
+        <% } %>
+              
+            <!-- Contact Info Button -->
+                
+            <button type="button" id="contactBtn" class="action-btn">
+                <i class="bi bi-telephone-fill"></i><br> Contact
+            </button> 
+             
+        <% if(currentUser) { %>
+            <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                <i class="bi bi-star-fill"></i><br> Review
+            </button>
+         <% } %>
+
+    </div>
+
+    <!-- Contact Info Popup -->
+    <div id="contactPopup" class="contact-popup">
+        <div class="contact-content">
+            <span id="closePopup" class="close-btn">&times;</span>
+            <% if (listing.contact) { %>
+                <h4>Contact Information</h4>
+                <p><b>Phone:</b> <%= listing.contact.phone || "N/A" %></p>
+                <p><b>Email:</b> <%= listing.contact.email || "N/A" %></p>
+             <% } else { %>
+                <p>No contact info available.</p>
+            <% } %>
+        </div>
+    </div>
+
+
+ <% if(currentUser) { %>
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color:#001233; color:#fff; border-radius:12px;">
+            
+                <div class="modal-header">
+                    <h4 class="modal-title" id="reviewModalLabel">Leave a Review</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="POST" action="/listings/<%= listing._id %>/reviews" class="listing-form needs-validation" novalidate>
+                        <!-- Rating -->
+                        <div class="form-group mb-3">
+                            <label for="rating">Rating: </label>
+                            <fieldset class="starability-slot">
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" required />
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="form-group mb-3">
+                            <textarea name="review[comment]" id="comment" rows="4" placeholder="Type your comment..." class="form-control" required></textarea>
+                            <div class="invalid-feedback">Please add some comments for review</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="action-btn">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<% } %> 
+
+
+
+<hr>
+
+
+
+        <!-- <% if(currentUser) { %>
+
+        <br><hr><br>
+
+        <h4>Leave a Review</h4>
+        <form method="POST" action="/listings/<%= listing._id %>/reviews" class="listing-form needs-validation" novalidate>
+
+          <div class="form-group">
+            <label for="rating">Rating: </label>
+            <fieldset class="starability-slot">
+                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." required />
+                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                <label for="first-rate1" title="Terrible">1 star</label>
+                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                <label for="first-rate2" title="Not good">2 stars</label>
+                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                <label for="first-rate3" title="Average">3 stars</label>
+                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                <label for="first-rate4" title="Very good">4 stars</label>
+                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+          </div>
+
+          <div class="form-group">
+              <textarea name="review[comment]" id="comment" rows="5" cols="50" placeholder="   type your comment..."  class="form-control" required></textarea>
+              <div class="invalid-feedback">Please add some comments for review</div>
+          </div>
+                    
+          <br><br>
+
+          <button type="submit" class="action-btn">Submit</button>
+            
+        </form>
+
+        <% } %> -->
+       
+
+         <% if(listing.reviews.length > 0) { %>
+        
+        <h4>All Reviews</h4>
+        <div class="row">
+            <% listing.reviews.forEach(review => { %>
+                <div class="card col-5 ms-3 mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@<%= review.author.username %></h5>
+                        <p class="starability-result" data-rating="<%= review.rating %>"></p>
+                        <p class="card-text"><%= review.comment %></p>
+                    </div>
+                    <% if(currentUser && review.author._id.equals(currentUser._id)) { %>
+                        <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                            <button type="submit" class="custom-btn mb-3">Delete</button>
+                        </form>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+         <hr>
+    <% } %>
+
+        
+
+       
+ 
+    <div class="map-container col-8 mb-3">
+        <h3>Where you'll be</h3>
+        <div id="map"></div>
+    </div>
+
+
+     <% if(currentUser && listing.owner && listing.owner._id.equals(currentUser._id)) { %>
+
+        <hr>
+        <div class="custom-btn">
+
+            <form method="GET" action="/listings/<%=listing._id%>/rooms/new">
+                <button type="submit" class="action-btn">
+                    <i class="bi bi-plus-circle ms-2 me-2"></i>Add Room 
+                </button>
+            </form>
+            
+            <form method="GET" action="/listings/<%=listing._id%>/edit">
+                <button type="submit" class="action-btn">
+                    <i class="bi bi-pencil-square ms-2 me-2"></i>Edit 
+                </button>
+            </form>
+
+            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                <button type="submit" class="action-btn">
+                    <i class="bi bi-trash-fill ms-2 me-2"></i>Delete 
+                </button>
+            </form>
+
+        </div>
+        
+        <% } %>
+
+
+</div>
+        
+<script src="/js/map.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const contactBtn = document.getElementById("contactBtn");
+    const contactPopup = document.getElementById("contactPopup");
+    const closePopup = document.getElementById("closePopup");
+
+    // Open popup
+    contactBtn.addEventListener("click", () => {
+        contactPopup.classList.add("show");
+    });
+
+    // Close popup
+    closePopup.addEventListener("click", () => {
+        contactPopup.classList.remove("show");
+    });
+
+    // Click outside to close
+    window.addEventListener("click", (e) => {
+        if (e.target === contactPopup) {
+            contactPopup.classList.remove("show");
+        }
+    });
+
+
+    
+
+
+});
+</script>
+

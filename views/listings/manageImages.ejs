@@ -1,0 +1,27 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+  <h2>Manage Images for Room <%= room.roomNumber %></h2>
+
+  <div class="row">
+    <% room.images.forEach(img => { %>
+      <div class="col-md-3 mb-3">
+        <div class="card">
+          <img src="<%= img.url %>" class="card-img-top" alt="Room Image">
+          <div class="card-body text-center">
+            <form method="POST" action="/listings/<%= listing._id %>/rooms/<%= room._id %>/images/delete?_method=DELETE">
+              <input type="hidden" name="filename" value="<%= img.filename %>">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fa fa-trash"></i> Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <div class="mt-3">
+    <a href="/listings/<%= listing._id %>/rooms/<%= room._id %>/edit" class="btn btn-secondary">Back to Edit Room</a>
+  </div>
+</div>

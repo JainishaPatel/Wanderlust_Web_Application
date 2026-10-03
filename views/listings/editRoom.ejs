@@ -1,0 +1,165 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+#editRoomSection {
+  background: #001845;
+  padding: 30px;
+  border-radius: 12px;
+  color: #fff;
+  max-width: 800px;
+  margin: 30px auto;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+#editRoomSection h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #40d6ff;
+}
+
+#editRoomSection label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+#editRoomSection input,
+#editRoomSection select,
+#editRoomSection textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #5C677D;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #001233;
+}
+
+#editRoomSection .form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+#editRoomSection button,
+#editRoomSection a.cancel-btn {
+  background: #0466C8;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+}
+
+#editRoomSection button:hover,
+#editRoomSection a.cancel-btn:hover {
+  background: #0353A4;
+}
+</style>
+
+<div id="editRoomSection">
+  <h2>Edit Room for <%= listing.title %></h2>
+
+  <form method="POST" action="/listings/<%= listing._id %>/rooms/<%= room._id %>?_method=PUT" enctype="multipart/form-data">
+
+    <!-- Room Number -->
+    <label>Room Number:</label>
+    <input type="number" name="room[roomNumber]" value="<%= room.roomNumber %>" required>
+
+    <!-- Floor -->
+    <label>Floor:</label>
+    <input type="number" name="room[floor]" value="<%= room.floor %>">
+
+    <!-- Number of Beds -->
+    <label>Number of Beds:</label>
+    <input type="number" name="room[roomBeds]" value="<%= room.roomBeds %>" required>
+
+    <!-- Bed Types -->
+    <label>Bed Types:</label>
+    <% ['King','Queen','Double','Single'].forEach(type => { %>
+      <label>
+        <input type="checkbox" name="room[bedTypes][]" value="<%= type %>" 
+        <%= room.bedTypes && room.bedTypes.includes(type) ? 'checked' : '' %>> 
+        <%= type %>
+      </label>
+    <% }) %>
+
+    <!-- Guests Allowed -->
+    <label>Guests Allowed:</label>
+    <input type="number" name="room[occupancy]" value="<%= room.occupancy %>" required>
+
+    <!-- Amenities -->
+    <label>Amenities:</label>
+    <% ['Wi-Fi','TV','Air Conditioning'].forEach(amenity => { %>
+      <label>
+        <input type="checkbox" name="room[amenities][]" value="<%= amenity %>"
+        <%= room.amenities && room.amenities.includes(amenity) ? 'checked' : '' %>>
+        <%= amenity %>
+      </label>
+    <% }) %>
+
+    <!-- Bathroom -->
+    <label>Bathroom:</label>
+    <select name="room[bathroom]">
+      <option value="Attached Bathroom" <%= room.bathroom === "Attached Bathroom" ? "selected" : "" %>>Attached Bathroom</option>
+      <option value="Shared Bathroom" <%= room.bathroom === "Shared Bathroom" ? "selected" : "" %>>Shared Bathroom</option>
+      <option value="Private (Outside)" <%= room.bathroom === "Private (Outside)" ? "selected" : "" %>>Private (Outside)</option>
+    </select>
+
+    <!-- Toilet Type -->
+    <label>Toilet Type:</label>
+    <select name="room[toiletType]">
+      <option value="Western Toilet" <%= room.toiletType === "Western Toilet" ? "selected" : "" %>>Western Toilet</option>
+      <option value="Indian Toilet" <%= room.toiletType === "Indian Toilet" ? "selected" : "" %>>Indian Toilet</option>
+      <option value="Both Available" <%= room.toiletType === "Both Available" ? "selected" : "" %>>Both Available</option>
+    </select>
+
+    <!-- Price -->
+    <label>Price (per night):</label>
+    <input type="number" name="room[price]" value="<%= room.price %>" required>
+
+    <!-- Availability -->
+    <label>Available:</label>
+    <input type="checkbox" name="room[isAvailable]" value="true" <%= room.isAvailable ? "checked" : "" %>>
+
+    <!-- Check-in / Check-out -->
+    <label>Check-in:</label>
+    <input type="text" id="checkin" name="room[checkin]" value="<%= room.checkin %>" required>
+
+    <label>Check-out:</label>
+    <input type="text" id="checkout" name="room[checkout]" value="<%= room.checkout %>" required>
+
+    <!-- Rules -->
+    <label>Rules / Notes:</label>
+    <textarea name="room[rules]"><%= room.rules %></textarea>
+
+    <!-- Upload New Images -->
+    <label>Upload New Images:</label>
+    <input type="file" name="images" multiple>
+
+    <!-- Manage Existing Images Link -->
+    <div style="margin-top:15px;">
+      <a href="/listings/<%= listing._id %>/rooms/<%= room._id %>/images"
+         class="cancel-btn" style="background:#5C677D;">
+        Manage Existing Images
+      </a>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit">Update Room</button>
+      <a href="/listings/<%= listing._id %>/rooms" class="cancel-btn">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  flatpickr("#checkin", { enableTime: true, noCalendar: true, dateFormat: "h:i K", time_24hr: false });
+  flatpickr("#checkout", { enableTime: true, noCalendar: true, dateFormat: "h:i K", time_24hr: false });
+});
+</script>

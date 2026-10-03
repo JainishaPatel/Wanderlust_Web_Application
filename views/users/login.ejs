@@ -1,0 +1,55 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div>
+        <form method="POST" action="/login" class="needs-validation listing-form" novalidate>
+
+            <h2>Login on Wanderlust</h2>
+
+            <br>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="email" placeholder="you@example.com" required>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" id="username" placeholder="Enter your username" required>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="password"  placeholder="Enter your password" required>
+                <!-- Eye icon -->
+                <i id="togglePassword" class="fa fa-eye"></i>
+
+            
+            </div>
+
+            <br><br>
+
+            <button type="submit">Login</button>
+
+        </form>
+    </div>
+
+<script>
+    const togglePassword = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+
+    togglePassword.addEventListener("click", function() {
+        // Toggle input type
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+
+        // Toggle eye / eye-slash icon
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>
+
+
